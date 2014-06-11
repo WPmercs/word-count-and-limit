@@ -2,10 +2,10 @@
 /*
 Plugin Name: WPWCL - WordPress Word Count and Limit
 Text Domain: wpwcl
-Plugin URI: http://perso.jojaba.fr/
+Plugin URI: https://wordpress.org/plugins/word-count-and-limit/
 Description: Dynamically counts the words in edit post window and limit the character count if needed for one or more user roles.
 Author: Jojaba
-Version: 1.0
+Version: 1.1
 Author URI: http://perso.jojaba.fr/
 */
 
@@ -63,22 +63,26 @@ if( !function_exists('wpwcl_options_do_page'))  {
         jQuery(document).ready(function() {
             if (jQuery("input#limit_true").prop("checked")) {
                 jQuery("#impacted_users_option").parent().parent().show();
+                jQuery("#impacted_post_types_option").parent().parent().show();
                 jQuery("#maxchars_option").parent().parent().show();
                 jQuery("#warning_option").parent().parent().show();
             }
             else {
                 jQuery("#impacted_users_option").parent().parent().hide();
+                jQuery("#impacted_post_types_option").parent().parent().hide();
                 jQuery("#maxchars_option").parent().parent().hide();
                 jQuery("#warning_option").parent().parent().hide();
             }
             jQuery("input[name*='ask_limitation_option']").on("change", function() {
                 if (jQuery("input#limit_true").prop("checked")) {
                     jQuery("#impacted_users_option").parent().parent().show("slow");
+                    jQuery("#impacted_post_types_option").parent().parent().show("slow");
                     jQuery("#maxchars_option").parent().parent().show("slow");
                     jQuery("#warning_option").parent().parent().show("slow");
                 }
                 else {
                     jQuery("#impacted_users_option").parent().parent().hide("slow");
+                    jQuery("#impacted_post_types_option").parent().parent().hide("slow");
                     jQuery("#maxchars_option").parent().parent().hide("slow");
                     jQuery("#warning_option").parent().parent().hide("slow");
                 }
@@ -101,7 +105,7 @@ if( !function_exists('wpwcl_options_settings'))  {
 			'wpwcl_settings_options',  //$option_group , A settings group name. Must exist prior to the register_setting call. This must match what's called in settings_fields()
 			'wpwcl_settings_options', // $option_name The name of an option to sanitize and save.
 			'wpwcl_options_validate' // $sanitize_callback  A callback function that sanitizes the option's value.
-			);
+        );
 
 		/** Add a section **/
 		add_settings_section(
@@ -109,61 +113,85 @@ if( !function_exists('wpwcl_options_settings'))  {
 			'&nbsp;', // Title or name of the section (to be output on the page), you can leave nbsp here if not wished to display
 			'wpwcl_option_section_text',  // callback to display the content of the section itself
 			'wpwcl_setting_section' // The page name. This needs to match the text we gave to the do_settings_sections function call 
-			);
+        );
 
 		/** Register each option **/
 		add_settings_field(
 			'ask_limitation_option', 
 			__( 'Set a limit?', 'wpwcl' ), 
-			'func_ask_limitation_option', 
+			'wpwcl_func_ask_limitation_option', 
 			'wpwcl_setting_section',  
 			'wpwcl_option_main' 
-			); 
+        ); 
 		
 		add_settings_field(
 			'impacted_users_option', 
 			__( 'Impacted users', 'wpwcl' ), 
-			'func_impacted_users_option', 
+			'wpwcl_func_impacted_users_option', 
 			'wpwcl_setting_section',  
 			'wpwcl_option_main' 
-			); 	
+        ); 
+        
+        add_settings_field(
+			'impacted_post_types_option', 
+			__( 'Impacted post types', 'wpwcl' ), 
+			'wpwcl_func_impacted_post_types_option', 
+			'wpwcl_setting_section',  
+			'wpwcl_option_main' 
+        ); 
 			
 		add_settings_field(
 			'maxchars_option', 
 			__( 'Max characters allowed', 'wpwcl' ), 
-			'func_maxchars_option', 
+			'wpwcl_func_maxchars_option', 
 			'wpwcl_setting_section',  
 			'wpwcl_option_main' 
-			); 
+        ); 
 	
 		add_settings_field(
 			'warning_option', 
 			__( 'Warning', 'wpwcl' ), 
-			'func_warning_option', 
+			'wpwcl_func_warning_option', 
 			'wpwcl_setting_section',  
 			'wpwcl_option_main' 
-			); 
+        ); 
 			
 		add_settings_field(
 			'format_option',  //$id a unique id for the field 
 			__( 'Output Format', 'wpwcl' ), // the title for the field
-			'func_format_option',  // the function callback, to display the input box
+			'wpwcl_func_format_option',  // the function callback, to display the input box
 			'wpwcl_setting_section',  // the page name that this is attached to (same as the do_settings_sections function call).
 			'wpwcl_option_main' // the id of the settings section that this goes into (same as the first argument to add_settings_section).
-			); 
+        );
+        
+        add_settings_field(
+			'warning_message_option',  //$id a unique id for the field 
+			__( 'Warning message', 'wpwcl' ), // the title for the field
+			'wpwcl_func_warning_message_option',  // the function callback, to display the input box
+			'wpwcl_setting_section',  // the page name that this is attached to (same as the do_settings_sections function call).
+			'wpwcl_option_main' // the id of the settings section that this goes into (same as the first argument to add_settings_section).
+        );
+        
+        add_settings_field(
+			'contributor_message_option',  //$id a unique id for the field 
+			__( 'Contributor message', 'wpwcl' ), // the title for the field
+			'wpwcl_func_contributor_message_option',  // the function callback, to display the input box
+			'wpwcl_setting_section',  // the page name that this is attached to (same as the do_settings_sections function call).
+			'wpwcl_option_main' // the id of the settings section that this goes into (same as the first argument to add_settings_section).
+        );
     }
 }
 
 /** the theme section output**/
 if( !function_exists('wpwcl_option_section_text'))  {
 	function wpwcl_option_section_text(){
-	echo '<p>'.__( 'Here you can set the options of WP Word Count and Limit plugin. If you set a limit, the author of the post will be warned if he exceeds the character count limit by changing the color of the characters/words display color (<span style="color: darkorange">orange</span>: near the limit, <span style="color: red">red</span>: over the limit). If he tries to submit his post as it exceeds the character limit, he will be prompted a message while hovering the submission div and submission will be refused.', 'wpwcl' ).'</p>';
+	echo '<p>'.__( 'Here you can set the options of WP Word Count and Limit plugin. If you set a limit, the author of the post will be warned if he exceeds the character count limit by changing the characters/words display color (<span style="color: darkorange">orange</span>: near the limit, <span style="color: red">red</span>: over the limit). If he tries to submit his post as it exceeds the character limit, he will be prompted a message while hovering the submission div and submission will be refused.', 'wpwcl' ).'</p>';
 	}
 }
 
 /** The Limitation (yes or no) radio buttons **/
-if( !function_exists('func_ask_limitation_option'))  {
-	function func_ask_limitation_option() {
+if( !function_exists('wpwcl_func_ask_limitation_option'))  {
+	function wpwcl_func_ask_limitation_option() {
 		 /* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
 		$ask_limitation_option = ($options['ask_limitation_option'] != '') ? $options['ask_limitation_option'] : 0 ;
@@ -177,8 +205,8 @@ if( !function_exists('func_ask_limitation_option'))  {
 }
 
 /** The Impacted users Checkboxes **/
-if( !function_exists('func_impacted_users_option'))  {
-	function func_impacted_users_option(){
+if( !function_exists('wpwcl_func_impacted_users_option'))  {
+	function wpwcl_func_impacted_users_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
 		$impacted_users_option =  (is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor');
@@ -195,9 +223,34 @@ if( !function_exists('func_impacted_users_option'))  {
 	<?php }
 }
 
+/** The Impacted post types Checkboxes **/
+if( !function_exists('wpwcl_func_impacted_post_types_option'))  {
+	function wpwcl_func_impacted_post_types_option(){
+	/* Get the option value from the database. */
+		$options = get_option( 'wpwcl_settings_options' );
+		$impacted_post_types_option =  (is_array($options['impacted_post_types_option'])) ? $options['impacted_post_types_option'] : array('post');
+		/* Echo the field. */ ?>
+		<div id="impacted_post_types_option">
+		<input type="checkbox" id="impacted_post_types_option_contributor" name="wpwcl_settings_options[impacted_post_types_option][]" value="post"<?php if (in_array('post', $impacted_post_types_option)) echo ' checked'; ?> /> post<br>
+		<input type="checkbox" id="impacted_post_types_option_author" name="wpwcl_settings_options[impacted_post_types_option][]" value="page"<?php if (in_array('page', $impacted_post_types_option)) echo ' checked'; ?> /> page<br>
+		<?php /* listing of public custom post types */
+		    $custom_post_types = get_post_types( array('public' => true, '_builtin' => false) ); 
+            if (!empty($custom_post_types)) {
+                foreach ( $custom_post_types  as $custom_post_type ) { ?>
+                    <input type="checkbox" id="impacted_post_type_option_author" name="wpwcl_settings_options[impacted_post_types_option][]" value="page"<?php if (in_array($custom_post_type, $impacted_post_types_option)) echo ' checked'; ?> /> <?php echo $custom_post_type ?><br>
+                <?php } // end foreach
+            } // end if post_types
+        ?>
+		<p class="description">
+		    <?php _e( 'The post types that should be limited.', 'wpwcl' ); ?>
+        </p>
+        </div>
+	<?php }
+}
+
 /** The Max characters field **/
-if( !function_exists('func_maxchars_option'))  {
-	function func_maxchars_option(){
+if( !function_exists('wpwcl_func_maxchars_option'))  {
+	function wpwcl_func_maxchars_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
 		$maxchars_option = ($options['maxchars_option'] != '') ? $options['maxchars_option'] : '1000';
@@ -210,8 +263,8 @@ if( !function_exists('func_maxchars_option'))  {
 }
 
 /** The warning field */
-if( !function_exists('func_warning_option'))  {
-	function func_warning_option(){
+if( !function_exists('wpwcl_func_warning_option'))  {
+	function wpwcl_func_warning_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
 		$warning_option = ($options['warning_option'] != '') ? $options['warning_option'] : '100';
@@ -224,20 +277,48 @@ if( !function_exists('func_warning_option'))  {
 }
 
 /** The format field **/
-if( !function_exists('func_format_option'))  {
-	function func_format_option(){
+if( !function_exists('wpwcl_func_format_option'))  {
+	function wpwcl_func_format_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
 		$format_option = ($options['format_option'] != '') ? $options['format_option'] : '#input characters | #words words';	
 		/* Echo the field. */ ?>
-		<input type="text" size="50" id="format_option" name="wpwcl_settings_options[format_option]" value="<?php echo esc_attr($format_option); ?>" />
+		<input type="text" style="width: 40%;"  id="format_option" name="wpwcl_settings_options[format_option]" value="<?php echo esc_attr($format_option); ?>" />
 		<p class="description">
-		    <?php _e( 'You can define the output display using the following variables: <code>#input</code> (the number of characters), <code>#words</code> (the number of words). When limitaion is set, two additionnal variables are available: <code>#max</code> (the max characters allowed), <code>#left</code> (the remaining characters).', 'wpwcl' ) ?>
+		    <?php _e( 'You can define the output display using the following variables: <code>#input</code> (the number of characters), <code>#words</code> (the number of words). When limitaion is set, two additionnal variables are available: <code>#max</code> (the max characters allowed), <code>#left</code> (the remaining characters). The HTML tags are allowed', 'wpwcl' ) ?>
         </p>
         <p class="description"><strong><?php _e( 'Regular use:', 'wpwcl'); ?></strong></p>
-        <p><?php _e( '<code>#input characters | #words words</code> will display <q style="padding: 2px 4px; border: #e0e0e0 1px solid; background: #f7f7f7;">123 characters | 36 words.</q>.', 'wpwcl' ) ?></p>
+        <p><?php _e( '<code>&lt;b&gt;#input&lt;/b&gt; characters | &lt;b&gt;#words&lt;/b&gt; words</code> will display <q style="padding: 2px 4px; border: #e0e0e0 1px solid; background: #f7f7f7;"><b>123</b> characters | <b>36</b> words.</q>.', 'wpwcl' ) ?></p>
         <p class="description"><strong><?php _e( 'When limit set:', 'wpwcl'); ?></strong></p>
-        <p><?php _e( '<code>#input/#max characters, #left left | #words words</code> will display <q style="padding: 2px 4px; border: #e0e0e0 1px solid; background: #f7f7f7;">123/250 characters, 127 left | 36 words</q> or <q style="padding: 2px 4px; border: #e0e0e0 1px solid; background: #f7f7f7; color: red;">256/250 characters, 0 left | 68 words</q>.', 'wpwcl' ) ?></p>
+        <p><?php _e( '<code>#input/#max &lt;i&gt;characters&lt;/i&gt;, #left &lt;i&gt;left&lt;/i&gt; | #words &lt;i&gt;words&lt;/i&gt;</code> will display <q style="padding: 2px 4px; border: #e0e0e0 1px solid; background: #f7f7f7;">123/250 <i>characters</i>, 127 <i>left</i> | 36 <i>words</i></q> or <q style="padding: 2px 4px; border: #e0e0e0 1px solid; background: #f7f7f7; color: red;">256/250 <i>characters</i>, 0 <i>left</i> | 68 <i>words</i></q>.', 'wpwcl' ) ?></p>
+    <?php }
+}
+
+/** The warning message field **/
+if( !function_exists('wpwcl_func_warning_message_option'))  {
+	function wpwcl_func_warning_message_option(){
+	/* Get the option value from the database. */
+		$options = get_option( 'wpwcl_settings_options' );
+		$warning_message_option = ($options['warning_message_option'] != '') ? $options['warning_message_option'] : __( 'Sorry, but you exceeded the characters limit!', 'wpwcl');	
+		/* Echo the field. */ ?>
+		<input style="width: 95%;" type="text" id="warning_message_option" name="wpwcl_settings_options[warning_message_option]" value="<?php echo esc_attr($warning_message_option); ?>" />
+		<p class="description">
+		    <?php _e( 'The message that will display when user exceeded the allowed characters count (no HTML tags allowed).', 'wpwcl' ) ?>
+        </p>
+    <?php }
+}
+
+/** The contributor message field **/
+if( !function_exists('wpwcl_func_contributor_message_option'))  {
+	function wpwcl_func_contributor_message_option(){
+	/* Get the option value from the database. */
+		$options = get_option( 'wpwcl_settings_options' );
+		$contributor_message_option = ($options['contributor_message_option'] != '') ? $options['contributor_message_option'] : __( 'Your Post has been submitted to the editorial team for validation and publish. Thanks for your contribution!', 'wpwcl');	
+		/* Echo the field. */ ?>
+		<input style="width: 95%;" type="text" id="contributor_message_option" name="wpwcl_settings_options[contributor_message_option]" value="<?php echo esc_attr($contributor_message_option); ?>" />
+		<p class="description">
+		    <?php _e( 'The message that will display when a contributor submit a post (no HTML tags allowed).', 'wpwcl' ) ?>
+        </p>
     <?php }
 }
 
@@ -260,6 +341,9 @@ if( !function_exists('wpwcl_options_validate'))  {
 	
 	/** Impacted Users	validation **/
 	$options['impacted_users_option'] = $input['impacted_users_option'];
+	
+	/** Impacted post types	validation **/
+	$options['impacted_post_types_option'] = $input['impacted_post_types_option'];
 		
 	/** maxchars number validation */
 	$options['maxchars_option'] = wp_filter_nohtml_kses( intval( $input['maxchars_option'] ) );
@@ -269,6 +353,12 @@ if( !function_exists('wpwcl_options_validate'))  {
 
 	/** clean text field, HTML allowed for the format */
 	$options['format_option'] = wp_filter_kses($input['format_option'] );
+	
+	/** warning message validation */
+	$options['warning_message_option'] = wp_filter_nohtml_kses( $input['warning_message_option'] );
+	
+	/** contributor message validation */
+	$options['contributor_message_option'] = wp_filter_nohtml_kses( $input['contributor_message_option'] );
 
 	return $options;	
 	}
@@ -279,17 +369,22 @@ if( !function_exists('wpwcl_options_validate'))  {
  */
 if (!function_exists('wpwcl_scripts')) {
     function wpwcl_scripts($post) {
-    // Only if we are in post composition window
+    // Retrieving settings values
+    $options = get_option( 'wpwcl_settings_options' );
+    $set_limit = ($options['ask_limitation_option'] == 1) ? 1 : 0;
+    $imp_user = (is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor'); // This is an array of roles
+    $imp_p_types = (is_array($options['impacted_post_types_option'])) ? $options['impacted_post_types_option'] : array('post'); // This is an array of post types
+    $max = ($options['maxchars_option'] > 0) ? $options['maxchars_option'] : 1000;
+    $warn = ($options['warning_option'] > 0) ? $options['warning_option'] : 100;
+    $format = ($options['format_option'] != '') ? $options['format_option'] : '#input characters | #words words';
+    $w_message = ($options['warning_message_option'] != '') ? $options['warning_message_option'] : __( 'Sorry, but you exceeded the characters limit!', 'wpwcl');
+    $c_message = ($options['contributor_message_option'] != '') ? $options['contributor_message_option'] : __( 'Your Post has been submitted to the editorial team for validation and publish. Thanks for your contribution!', 'wpwcl');
+    // post type fetching
     $p_id = get_the_ID();
     $post_type = get_post_type($p_id);
-    if ($post_type == 'post') :
-        // Retrieving settings values
-        $options = get_option( 'wpwcl_settings_options' );
-        $set_limit = ($options['ask_limitation_option'] == 1) ? 1 : 0;
-        $imp_user = (is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor'); // This is an array of roles
-        $max = ($options['maxchars_option'] > 0) ? $options['maxchars_option'] : 1000;
-        $warn = ($options['warning_option'] > 0) ? $options['warning_option'] : 100;
-        $format = ($options['format_option'] != '') ? $options['format_option'] : '#input characters | #words words';
+    // Only if no limit set or if the post type is in impacted post types
+    if ($set_limit == 0 || ($set_limit > 0 && in_array($post_type, $imp_p_types))) :
+        
         // Looking if user is impacted by limitation
         $c_user = wp_get_current_user();
 		$user_r = $c_user->roles; // User roles array
@@ -337,9 +432,9 @@ if (!function_exists('wpwcl_scripts')) {
                 var raw_content = jQuery('#content_ifr').contents().find('body').html();
             }
             var content = raw_content.replace(/(\\r\\n)+|\\n+|\\r+|\s+|(&nbsp;)+/gm,' '); // Replace newline, tabulations, &nbsp; by space to preserve word count
-            content = content.replace(/<[^>]+>/ig,''); // Replace HTML tags by spaces
-            content = content.replace(/(&lt;)[^(\&gt;)]+(\&gt;)/ig,''); // Replace HTML tags by spaces
-            content = content.replace(/\s+/ig,' '); // Replace multiple spaces by one space 
+            content = content.replace(/<[^>]+>/ig,''); // Remove HTML tags
+            content = content.replace(/(&lt;)[^(\&gt;)]+(\&gt;)/ig,''); // Remove HTML tags (when entities)
+            content = content.replace(/\[[^\]]+\]/ig,''); // Remove shortcodes
 			contentLength = content.length;
 			
             // All cases var definitions
@@ -381,10 +476,10 @@ if (!function_exists('wpwcl_scripts')) {
 		
 		/* Cleaning content to count the words */	
 		function getCleanedWordStringLength(content){
-		    // Cleaning and splitting wordstring (tags are already stripped)
+		    // Cleaning and splitting wordstring (tags and shortcodes are already stripped)
 			var rawContent = content;
-			var cleanedContent = rawContent.replace(/\s[\.:!\?;\(\)]+\s/gi, ' '); //Replacing ponctuation with spaces
-			var cleanedContent = cleanedContent.replace(/\s+/ig,' ') //Multiple spaces case replaced by one space
+			var cleanedContent = rawContent.replace(/[\.,:!\?;\)\]…\"]+/gi, ' '); //Replacing ending ponctuation with spaces to get right word number.
+			var cleanedContent = cleanedContent.replace(/\s+/ig,' ') // Multiple spaces case (after punctuation replacement) replaced by one space
 			var splitString = cleanedContent.split(' ');
 			// Word Count defining
 			var wordCount = splitString.length - 1;
@@ -398,12 +493,12 @@ if (!function_exists('wpwcl_scripts')) {
 		if ($set_limit > 0 && $is_impacted > 0) {
         echo "jQuery('#submitdiv').on('mouseover', function() {
             if (contentLength > maxCharacters) {
-                alert('".__( 'Sorry, but you exceeded the characters limit!', 'wpwcl')."');
+                alert('".$w_message."');
             }
         });\n
         jQuery('form#post').on('submit', function() {
         if (contentLength < maxCharacters && '".$user_role."' == 'contributor') {
-                alert('".__( 'Your Post has been submitted to the editorial team for validation and publish. Thanks for your contribution!', 'wpwcl')."');
+                alert('".$c_message."');
             }
         });\n";
         } // End if limit set and user must be impacted
@@ -433,7 +528,7 @@ add_action( 'after_wp_tiny_mce', 'wpwcl_scripts');
             global $post;
             $content = wp_filter_nohtml_kses($post->post_content);
             if (strlen($content) > $maxchars) 
-                wp_die( __('Sorry, but you exceeded the characters limit!', 'wpwcl') ); 
+                wp_die( $w_message ); 
         }
     } 
     add_action('draft_to_publish', 'wpwcl_maxcharreached');

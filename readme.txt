@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5PXUP
 Tags: words, characters, count, limit
 Requires at least: 3.0.1
 Tested up to: 3.9
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,8 @@ Here's the list of the settings (see screenshots for further infos):
 * Warning characters count setting (the count before max count when the warning is fired)
 * Output Format. You can define how you would like to see the output displayed using different placeholders : `#input` (the character count that has been typed), `#max` (the max characters allowed), `#left` (the characters count left), `#words` (The number of words).
 * Choose what user role should be limited. Default set to contributor role.
+* Choose the post types that should be limited. Default set to post.
+* Set customised messages for warning or for contributor submission.
 
 Availabe languages : english and french.
 
@@ -40,6 +42,12 @@ Yes. You just have to check the right checkboxes in the plugin options screen. D
 
 The native WP word count will be displayed. The characters limit will still be functionnal, but no warning message will be displayed before submitting. After clicking on the button to submit the post and if the characters count exceed the max characters count set in the options, the submission will be refused.
 
+= Can I add html tags in the output format? =
+
+Yes, all html tags enabled in your WordPress installation are allowed (see in `/wp-includes/kses.php` file to get a list of these tags).
+So this format : `&lt;b&gt;#input&lt;/b&gt; characters | &lt;b&gt;#words&lt;/b&gt; words`
+… will output something like that : **80** characters | **15** words (the numbers are bold).
+
 == Screenshots ==
 
 1. How to find the WordPress Word Count and Limit options
@@ -50,10 +58,10 @@ The native WP word count will be displayed. The characters limit will still be f
 
 == Changelog ==
 
+= 1.1 =
+* Improved the characters and word count system
+* Adding new options : impacted post types and customised messages.
+* Fixing typos in language files
+
 = 1.0 =
 * First release. Thanks for your feedback!
-
-== Upgrade Notice ==
-
-= 1.0 =
-* First release, so no particular upgrade notices... Thanks for your feedback!
