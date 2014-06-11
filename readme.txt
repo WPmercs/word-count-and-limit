@@ -45,7 +45,9 @@ The native WP word count will be displayed. The characters limit will still be f
 = Can I add html tags in the output format? =
 
 Yes, all html tags enabled in your WordPress installation are allowed (see in `/wp-includes/kses.php` file to get a list of these tags).
-So this format : `&lt;b&gt;#input&lt;/b&gt; characters | &lt;b&gt;#words&lt;/b&gt; words`
+
+So this format : `<b>#input</b> characters | <b>#words</b> words`
+
 … will output something like that : **80** characters | **15** words (the numbers are bold).
 
 == Screenshots ==
