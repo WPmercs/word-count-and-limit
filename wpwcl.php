@@ -5,7 +5,7 @@ Text Domain: wpwcl
 Plugin URI: https://wordpress.org/plugins/word-count-and-limit/
 Description: Dynamically counts the words in edit post window and limit the character count if needed for one or more user roles.
 Author: Jojaba
-Version: 1.1
+Version: 1.2
 Author URI: http://perso.jojaba.fr/
 */
 
@@ -194,7 +194,7 @@ if( !function_exists('wpwcl_func_ask_limitation_option'))  {
 	function wpwcl_func_ask_limitation_option() {
 		 /* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
-		$ask_limitation_option = ($options['ask_limitation_option'] != '') ? $options['ask_limitation_option'] : 0 ;
+		$ask_limitation_option = (isset($options['ask_limitation_option'])) ? $options['ask_limitation_option'] : 0 ;
 		
 		/* Echo the field. */ ?>
 		<label for="limit_true" > <?php _e( 'Yes', 'wpwcl' ); ?></label>
@@ -209,7 +209,7 @@ if( !function_exists('wpwcl_func_impacted_users_option'))  {
 	function wpwcl_func_impacted_users_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
-		$impacted_users_option =  (is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor');
+		$impacted_users_option =  (isset($options['impacted_users_option']) && is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor');
 		/* Echo the field. */ ?>
 		<div id="impacted_users_option">
 		<input type="checkbox" id="impacted_users_option_contributor" name="wpwcl_settings_options[impacted_users_option][]" value="contributor"<?php if (in_array('contributor', $impacted_users_option)) echo ' checked'; ?> /> <?php _e( 'Contributors', 'wpwcl' ); ?><br>
@@ -228,7 +228,7 @@ if( !function_exists('wpwcl_func_impacted_post_types_option'))  {
 	function wpwcl_func_impacted_post_types_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
-		$impacted_post_types_option =  (is_array($options['impacted_post_types_option'])) ? $options['impacted_post_types_option'] : array('post');
+		$impacted_post_types_option =  (isset($options['impacted_post_types_option']) && is_array($options['impacted_post_types_option'])) ? $options['impacted_post_types_option'] : array('post');
 		/* Echo the field. */ ?>
 		<div id="impacted_post_types_option">
 		<input type="checkbox" id="impacted_post_types_option_contributor" name="wpwcl_settings_options[impacted_post_types_option][]" value="post"<?php if (in_array('post', $impacted_post_types_option)) echo ' checked'; ?> /> post<br>
@@ -253,7 +253,7 @@ if( !function_exists('wpwcl_func_maxchars_option'))  {
 	function wpwcl_func_maxchars_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
-		$maxchars_option = ($options['maxchars_option'] != '') ? $options['maxchars_option'] : '1000';
+		$maxchars_option = (isset($options['maxchars_option']) && $options['maxchars_option'] != '') ? $options['maxchars_option'] : '1000';
 		/* Echo the field. */ ?>
 		<input type="number" id="maxchars_option" name="wpwcl_settings_options[maxchars_option]" value="<?php echo esc_attr($maxchars_option); ?>" />
 		<p class="description">
@@ -267,7 +267,7 @@ if( !function_exists('wpwcl_func_warning_option'))  {
 	function wpwcl_func_warning_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
-		$warning_option = ($options['warning_option'] != '') ? $options['warning_option'] : '100';
+		$warning_option = (isset($options['warning_option']) && $options['warning_option']  != '') ? $options['warning_option'] : '100';
 		/* Echo the field. */ ?>
 		<input type="number" id="warning_option" name="wpwcl_settings_options[warning_option]" value="<?php echo esc_attr($warning_option); ?>" />
 		<p class="description">
@@ -281,7 +281,7 @@ if( !function_exists('wpwcl_func_format_option'))  {
 	function wpwcl_func_format_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
-		$format_option = ($options['format_option'] != '') ? $options['format_option'] : '#input characters | #words words';	
+		$format_option = (isset($options['format_option']) && $options['format_option'] != '') ? $options['format_option'] : '#input characters | #words words';	
 		/* Echo the field. */ ?>
 		<input type="text" style="width: 40%;"  id="format_option" name="wpwcl_settings_options[format_option]" value="<?php echo esc_attr($format_option); ?>" />
 		<p class="description">
@@ -299,7 +299,7 @@ if( !function_exists('wpwcl_func_warning_message_option'))  {
 	function wpwcl_func_warning_message_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
-		$warning_message_option = ($options['warning_message_option'] != '') ? $options['warning_message_option'] : __( 'Sorry, but you exceeded the characters limit!', 'wpwcl');	
+		$warning_message_option = (isset($options['warning_message_option']) && $options['warning_message_option'] != '') ? $options['warning_message_option'] : __( 'Sorry, but you exceeded the characters limit!', 'wpwcl');	
 		/* Echo the field. */ ?>
 		<input style="width: 95%;" type="text" id="warning_message_option" name="wpwcl_settings_options[warning_message_option]" value="<?php echo esc_attr($warning_message_option); ?>" />
 		<p class="description">
@@ -313,7 +313,7 @@ if( !function_exists('wpwcl_func_contributor_message_option'))  {
 	function wpwcl_func_contributor_message_option(){
 	/* Get the option value from the database. */
 		$options = get_option( 'wpwcl_settings_options' );
-		$contributor_message_option = ($options['contributor_message_option'] != '') ? $options['contributor_message_option'] : __( 'Your Post has been submitted to the editorial team for validation and publish. Thanks for your contribution!', 'wpwcl');	
+		$contributor_message_option = (isset($options['contributor_message_option']) && $options['contributor_message_option'] != '') ? $options['contributor_message_option'] : __( 'Your Post has been submitted to the editorial team for validation and publish. Thanks for your contribution!', 'wpwcl');	
 		/* Echo the field. */ ?>
 		<input style="width: 95%;" type="text" id="contributor_message_option" name="wpwcl_settings_options[contributor_message_option]" value="<?php echo esc_attr($contributor_message_option); ?>" />
 		<p class="description">
@@ -371,14 +371,14 @@ if (!function_exists('wpwcl_scripts')) {
     function wpwcl_scripts($post) {
     // Retrieving settings values
     $options = get_option( 'wpwcl_settings_options' );
-    $set_limit = ($options['ask_limitation_option'] == 1) ? 1 : 0;
-    $imp_user = (is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor'); // This is an array of roles
-    $imp_p_types = (is_array($options['impacted_post_types_option'])) ? $options['impacted_post_types_option'] : array('post'); // This is an array of post types
-    $max = ($options['maxchars_option'] > 0) ? $options['maxchars_option'] : 1000;
-    $warn = ($options['warning_option'] > 0) ? $options['warning_option'] : 100;
-    $format = ($options['format_option'] != '') ? $options['format_option'] : '#input characters | #words words';
-    $w_message = ($options['warning_message_option'] != '') ? $options['warning_message_option'] : __( 'Sorry, but you exceeded the characters limit!', 'wpwcl');
-    $c_message = ($options['contributor_message_option'] != '') ? $options['contributor_message_option'] : __( 'Your Post has been submitted to the editorial team for validation and publish. Thanks for your contribution!', 'wpwcl');
+    $set_limit = (isset($options['ask_limitation_option']) && $options['ask_limitation_option'] == 1) ? 1 : 0;
+    $imp_user = (isset($options['impacted_users_option']) && is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor'); // This is an array of roles
+    $imp_p_types = (isset($options['impacted_post_types_option']) && is_array($options['impacted_post_types_option'])) ? $options['impacted_post_types_option'] : array('post'); // This is an array of post types
+    $max = (isset($options['maxchars_option']) && $options['maxchars_option'] > 0) ? $options['maxchars_option'] : 1000;
+    $warn = (isset($options['warning_option']) && $options['warning_option'] > 0) ? $options['warning_option'] : 100;
+    $format = (isset($options['format_option']) && $options['format_option'] != '') ? $options['format_option'] : '#input characters | #words words';
+    $w_message = (isset($options['warning_message_option']) && $options['warning_message_option'] != '') ? $options['warning_message_option'] : __( 'Sorry, but you exceeded the characters limit!', 'wpwcl');
+    $c_message = (isset($options['contributor_message_option']) && $options['contributor_message_option'] != '') ? $options['contributor_message_option'] : __( 'Your Post has been submitted to the editorial team for validation and publish. Thanks for your contribution!', 'wpwcl');
     // post type fetching
     $p_id = get_the_ID();
     $post_type = get_post_type($p_id);
@@ -517,9 +517,9 @@ add_action( 'after_wp_tiny_mce', 'wpwcl_scripts');
     function wpwcl_maxcharreached(){ 
         // Get some options values
         $options = get_option( 'wpwcl_settings_options' );
-        $setLimit = $options['ask_limitation_option'];
-        $imp_user = (is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor'); // This is an array of roles
-        $maxchars = ($options['maxchars_option'] != '') ? $options['maxchars_option'] : '1000';
+        $setLimit = (isset($options['ask_limitation_option'])) ? $options['ask_limitation_option'] : '0';
+        $imp_user = (isset($options['impacted_users_option']) && is_array($options['impacted_users_option'])) ? $options['impacted_users_option'] : array('contributor'); // This is an array of roles
+        $maxchars = (isset($options['maxchars_option']) && $options['maxchars_option'] != '') ? $options['maxchars_option'] : '1000';
         // See if current user belongs to impacted users
         $c_user = wp_get_current_user();
         $user_r = $c_user->roles; // User roles array
