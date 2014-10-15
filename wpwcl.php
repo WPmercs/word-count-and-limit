@@ -332,12 +332,6 @@ if( !function_exists('wpwcl_options_validate'))  {
 	
 	/** Radio buttons (ask limit) validation **/
 	$options['ask_limitation_option'] = $input['ask_limitation_option'];
-
-	// Our radio option must actually be in our array of radio options
-	if ( ! isset( $input['ask_limitation_option'] ) )
-		$input['ask_limitation_option'] = null;
-	if ( ! array_key_exists( $input['ask_limitation_option'], $ask_limitation_option) )
-		$input['ask_limitation_option'] = null;
 	
 	/** Impacted Users	validation **/
 	$options['impacted_users_option'] = $input['impacted_users_option'];
