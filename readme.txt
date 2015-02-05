@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5PXUP
 Tags: words, characters, count, limit
 Requires at least: 3.0.1
 Tested up to: 4.0
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,12 @@ So this format : `<b>#input</b> characters | <b>#words</b> words`
 5. The output for the format : `#input`/`#max` characters, `#left` left | `#words` words (when over the limit)
 
 == Changelog ==
+
+= 1.2 =
+* Fixed wrong post type display in option page
+* Fixed the wrong condition set to get the options in option page
+* Changed the way the user is notified when over the limit (now fires when submitting, not on hovering the publish div)
+* Fixed some typos in fr tanslation
 
 = 1.1 =
 * Improved the characters and word count system

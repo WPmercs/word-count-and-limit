@@ -417,7 +417,7 @@ if (!function_exists('wpwcl_scripts')) {
 		}
 		
 		/* Counting the characters and the words */
-		function countByCharacters(cont){
+		function countByCharacters(cont) {
 		    if (cont == 'textarea') {
 		        // Textarea case
 		        var raw_content = textarea_cont.val();
@@ -478,23 +478,24 @@ if (!function_exists('wpwcl_scripts')) {
 			// Word Count defining
 			var wordCount = splitString.length - 1;
 			return wordCount;
-		}";
+		}"."\n";
 		
 		// Launching word count on load
-        echo "getTheCharacterCount('wysiwig');";
+        echo "getTheCharacterCount('wysiwig');"."\n";
        
-		// Refuse saving if too many characters only if for the defined users
+		
 		if ($set_limit > 0 && $is_impacted > 0) {
-        echo "jQuery('#submitdiv').on('mouseover', function() {
+            echo "jQuery('form#post').on('submit', function(e) {
             if (contentLength > maxCharacters) {
-                alert('".$w_message."');
+                /* Refuse saving if too many characters only for the defined users */
+                e.preventDefault();
+                alert('$w_message');
             }
-        });\n
-        jQuery('form#post').on('submit', function() {
-        if (contentLength < maxCharacters && '".$user_role."' == 'contributor') {
-                alert('".$c_message."');
+            else if ('$user_role' == 'contributor') {
+                /* Message for contributor */
+                alert('$c_message');
             }
-        });\n";
+            });\n";
         } // End if limit set and user must be impacted
         
         echo "});\n"; // End jQuery handling
