@@ -237,7 +237,7 @@ if( !function_exists('wpwcl_func_impacted_post_types_option'))  {
 		    $custom_post_types = get_post_types( array('public' => true, '_builtin' => false) ); 
             if (!empty($custom_post_types)) {
                 foreach ( $custom_post_types  as $custom_post_type ) { ?>
-                    <input type="checkbox" id="impacted_post_type_option_author" name="wpwcl_settings_options[impacted_post_types_option][]" value="page"<?php if (in_array($custom_post_type, $impacted_post_types_option)) echo ' checked'; ?> /> <?php echo $custom_post_type ?><br>
+                    <input type="checkbox" id="impacted_post_type_option_author" name="wpwcl_settings_options[impacted_post_types_option][]" value="<?php echo $custom_post_type ?>"<?php if (in_array($custom_post_type, $impacted_post_types_option)) echo ' checked'; ?> /> <?php echo $custom_post_type ?><br>
                 <?php } // end foreach
             } // end if post_types
         ?>
