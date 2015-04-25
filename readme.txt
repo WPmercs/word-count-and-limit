@@ -3,8 +3,8 @@ Contributors: jojaba
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5PXUPNR78J2YW&lc=FR&item_name=Jojaba&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: words, characters, count, limit
 Requires at least: 3.0.1
-Tested up to: 4.0
-Stable tag: 1.2
+Tested up to: 4.2
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,9 @@ So this format : `<b>#input</b> characters | <b>#words</b> words`
 5. The output for the format : `#input`/`#max` characters, `#left` left | `#words` words (when over the limit)
 
 == Changelog ==
+
+= 1.2.1 =
+* Now, when a post has reached max word count you can still save it (but not publish).
 
 = 1.2 =
 * Fixed wrong post type display in option page

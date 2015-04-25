@@ -485,7 +485,7 @@ if (!function_exists('wpwcl_scripts')) {
        
 		
 		if ($set_limit > 0 && $is_impacted > 0) {
-            echo "jQuery('form#post').on('submit', function(e) {
+            echo "jQuery('input#publish').on('click', function(e) {
             if (contentLength > maxCharacters) {
                 /* Refuse saving if too many characters only for the defined users */
                 e.preventDefault();
@@ -523,7 +523,7 @@ add_action( 'after_wp_tiny_mce', 'wpwcl_scripts');
             global $post;
             $content = wp_filter_nohtml_kses($post->post_content);
             if (strlen($content) > $maxchars) 
-                wp_die( $w_message ); 
+                wp_die( 'Sorry, too much words in this post!' ); 
         }
     } 
     add_action('draft_to_publish', 'wpwcl_maxcharreached');
