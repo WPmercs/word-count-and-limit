@@ -5,7 +5,7 @@ Text Domain: wpwcl
 Plugin URI: https://wordpress.org/plugins/word-count-and-limit/
 Description: Dynamically counts the words in edit post window and limit the character count if needed for one or more user roles.
 Author: Jojaba
-Version: 1.2
+Version: 1.2.1
 Author URI: http://perso.jojaba.fr/
 */
 
