@@ -262,6 +262,7 @@ if( !function_exists('wpwcl_func_impacted_users_option'))  {
 		/* Echo the field. */ ?>
 		<div id="impacted_users_option">
 			<?php
+				// get all roles
 				foreach( get_editable_roles() as $role_name => $role_info )
 				{
 					$check = ( in_array( $role_name, $impacted_users_option ) ? 'checked ' : '' );
